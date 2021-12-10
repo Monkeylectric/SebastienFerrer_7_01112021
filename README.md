@@ -6,14 +6,14 @@
 - MySQL
 
 ### Install ###
-Clone this project.
-From the frontend folder, run `npm install`.
-From the backend folder, run `npm install`.
-Import `groupomania.sql` in your MySQL system with database named `groupomania`.
+1) Clone this project.
+2) From the frontend folder, run `npm install`.
+3) From the backend folder, run `npm install`.
+4) Import `groupomania.sql` in your MySQL system with database named `groupomania`.
 
 ### Launch Frontend & Backend ###
-From the frontend folder run the server with `npm run serve`.
-From the backend folder run the server with `nodemon server`.
+1) From the frontend folder run the server with `npm run serve`.
+2) From the backend folder run the server with `nodemon server`.
 
 ## Developed with
 
