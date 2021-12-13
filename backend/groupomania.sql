@@ -31,6 +31,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   -- UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+INSERT INTO `user` (`firstname`, `lastname`, `email`, `password`, `role`) VALUES
+(`Admin`, `Admin`, `admin@groupomania.fr`, `$2b$10$.ngccCmzz6hfLUdUH2p/AeKXOhFTO4ryIC6laBiRuB76YilBBikfy`, `admin`);
+
 -- --------------------------------------------------------
 
 --
