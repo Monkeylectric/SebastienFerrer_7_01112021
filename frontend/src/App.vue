@@ -17,17 +17,23 @@ export default {
     },
     data() {
         return {
-            isLogged: false,
+            isLogged: null,
+        }
+    },
+    mounted() {
+        if(sessionStorage.getItem('user')) {
+            this.isLogged = true;
+        }else {
+            this.isLogged = null;
         }
     },
     updated() {
-        if(sessionStorage.getItem('isLogged')){
+        if(sessionStorage.getItem('user')) {
             this.isLogged = true;
         }else {
-            this.isLogged = false;
+            this.isLogged = null;
         }
-        
-    }
+    },
 }
 </script>
 

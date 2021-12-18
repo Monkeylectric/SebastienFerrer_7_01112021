@@ -1,10 +1,10 @@
 <template>
     <div>
         <div id="feed" class="container">
-            <b-form id="newPostForm" @submit="postMessage" v-if="isLogged">
+            <b-form id="newPostForm" @submit="postMessage" v-if="$root.isLogged">
                 <label for="setPost" id="setPostHeader">Publier un message:</label>
-                <b-form-input class="mb-2 mr-sm-2 mb-sm-0" v-model="titleToPost" type="text" placeholder="Votre titre..." required></b-form-input>
-                <b-form-textarea id="comment" class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="messageToPost" placeholder="Enter un message..." required></b-form-textarea>
+                <b-form-input class="mb-2 mr-sm-2 mb-sm-0" v-model="titleToPost" type="text" placeholder="Votre titre..." maxlength="255" required></b-form-input>
+                <b-form-textarea id="comment" class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="messageToPost" placeholder="Enter un message..." maxlength="1500" required></b-form-textarea>
                 <b-form-file v-model="postFile" plain></b-form-file>
                 <b-button type="submit">Publier</b-button>
                 <p class="errorMessage">{{ errorMessage }}</p>
@@ -25,9 +25,9 @@
 
 <script>
 import Post from '@/components/Post.vue'
-//import Footer from '@/components/Footer.vue'
+import httpResquest from '../httpRequest'
 
-const axios = require('axios');
+//const axios = require('axios');
 
 export default {
     name: 'Feed',
@@ -37,9 +37,6 @@ export default {
     },
     data() {
         return {
-            userId: null,
-            tokenToCheck: null,
-            isLogged: false,
             titleToPost: '',
             messageToPost: '',
             postFile: null,
@@ -49,34 +46,26 @@ export default {
     },
     methods: {
         getAllPosts(){
-            axios.get('http://localhost:3000/post/getAllPost', { 
-                headers: {
-                    'Authorization': `Bearer ${this.tokenToCheck}`
-                }
-            })
+            httpResquest.get('post/getAllPost')
             .then(response => {
-                //console.log(response.data.result);
+                //console.log(response.data.result, this.$root.userId, this.$root.isLogged);
                 this.posts = response.data.result; 
             })
             .catch(error => {
                 console.log(error);
             })
+
+            console.log(this.$root.isLogged);
         },
         postMessage(e) {
             e.preventDefault();
 
             let formData = new FormData();
-            formData.append ("userId", this.userId);
             formData.append("title", this.titleToPost);
             formData.append("message", this.messageToPost);
             formData.append("image", this.postFile);
 
-            axios.post('http://localhost:3000/post/createPost', formData, { 
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${this.tokenToCheck}`
-                }
-            })
+            httpResquest.post('post/createPost', formData)
             .then(() => {
                 this.titleToPost = '';
                 this.messageToPost = '';
@@ -94,11 +83,6 @@ export default {
         },
     },
     mounted() {
-        if(sessionStorage.getItem('user')) {
-            this.userId = JSON.parse(sessionStorage.getItem('user')).userId;
-            this.tokenToCheck = JSON.parse(sessionStorage.getItem('user')).token;
-            this.isLogged = JSON.parse(sessionStorage.getItem('isLogged'));
-        }
         this.getAllPosts();
     },
     /*beforeupdated() {

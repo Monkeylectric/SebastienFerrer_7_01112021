@@ -24,16 +24,16 @@
                     <div v-for="comment in comments" :key="comment.id" class="comment">
                             <div class="commentUsername"><router-link :to="{ name: 'User', params: { id: comment.userId }}">{{comment.firstname}} {{comment.lastname}}</router-link></div>
                             <div class="commentMessage">{{comment.message}}</div>
-                            <span class="commentDelete" @click="deleteComment(comment.id)" v-if="userComment == comment.userId || userRole == 'admin'">X</span>
+                            <span class="commentDelete" @click="deleteComment(comment.id)" v-if="$root.userId == comment.userId || userRole == 'admin'">X</span>
                     </div>
                 </div>
             </div>
             <hr>
-            <div class="commentForm" v-if="isLogged">
+            <div class="commentForm" v-if="$root.isLogged">
                 <div class="userName"></div>
                 <b-form class="postCommentForm" @submit="postComment">
-                    <label for="comment">Votre commentaire:</label>
-                    <b-form-textarea id="comment" class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="newComment" placeholder="Ajouter un commentaire..." required></b-form-textarea>
+                    <!-- <label for="comment">Votre commentaire:</label> -->
+                    <b-form-textarea id="comment" class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="newComment" placeholder="Votre commentaire..." minlength="1" maxlength="255" required></b-form-textarea>
                     <b-button type="submit">Commenter</b-button>
                 </b-form>
             </div>
@@ -43,6 +43,7 @@
 
 <script>
 import axios from 'axios'
+import httpResquest from '../httpRequest'
 
 export default {
     name: "Post",
@@ -58,21 +59,14 @@ export default {
     data() {
         return {
             id: this.postId,
-            userComment: null,
             userRole: null,
-            tokenToCheck: null,
-            isLogged: false,
             newComment: '',
             comments: [],
         }
     },
     methods : {
         getComments() {
-            axios.get(`http://localhost:3000/comment/${this.id}`, { 
-                headers: {
-                    'Authorization': `Bearer ${this.tokenToCheck}`
-                }
-            })
+            httpResquest.get(`comment/${this.id}`)
             .then(response => {
                 this.comments = response.data.result;
             })
@@ -82,15 +76,22 @@ export default {
         },
         postComment(e) {
             e.preventDefault();
+            //console.log(this.id, this.newComment);
+
+            let formData = new FormData();
+            formData.append("postId", this.id);
+            formData.append("message", this.newComment);
+            console.log(formData);
 
             let comment = {
                 postId: this.id,
-                userId: this.userComment,
                 message: this.newComment,
             }
 
-            axios.post('http://localhost:3000/comment/createComment', comment , { headers: {
-                'Authorization': `Bearer ${this.tokenToCheck}`
+            //console.log(comment);
+
+            axios.post('http://localhost:3000/comment/createComment', comment, { headers: {
+                'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem('user')).token}`
             }})
             .then(() => {
                 this.newComment = '';
@@ -103,11 +104,7 @@ export default {
         deleteComment(commentId) {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce commentaire ?');
             if(valid == true){
-                axios.delete(`http://localhost:3000/comment/deleteComment/${commentId}`, { 
-                    headers: {
-                        'Authorization': `Bearer ${this.tokenToCheck}`
-                    }
-                })
+                httpResquest.delete(`comment/deleteComment/${commentId}`)
                 .then(() => {
                     console.log("Commentaire bien supprimé !");
                     this.getComments();
@@ -120,10 +117,7 @@ export default {
     },
     mounted() {
         if(sessionStorage.getItem('user')){
-            this.userComment = JSON.parse(sessionStorage.getItem('user')).userId;
             this.userRole = JSON.parse(sessionStorage.getItem('user')).userRole;
-            this.tokenToCheck = JSON.parse(sessionStorage.getItem('user')).token;
-            this.isLogged = JSON.parse(sessionStorage.getItem('isLogged'));
         }
         this.getComments();
     }
@@ -170,9 +164,9 @@ export default {
         height: 100%;
     }
 
-    .postMain {
+    /*.postMain {
 
-    }
+    }*/
     .postTitle{
         text-align: left;
         margin: 15px 0 5px 0;

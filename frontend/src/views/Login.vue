@@ -62,7 +62,7 @@ export default {
                         //userName: response.data.username,
                         userRole: response.data.role,
                     };
-                    sessionStorage.setItem('isLogged', true);
+                    //sessionStorage.setItem('isLogged', true);
                     sessionStorage.setItem('user', JSON.stringify(user));
                     this.$router.push('Feed');
                 })
@@ -78,14 +78,19 @@ export default {
                 })
         }
     },
+    /*beforeMount() {
+        localStorage.clear();
+        sessionStorage.clear();
+    },*/
     mounted() {
+        //localStorage.clear();
         sessionStorage.clear();
     }
 }
 </script>
 
 <style lang="scss">
-    #login {
-        height: 90vh;
-    }
+    // #login {
+    //     height: 90vh;
+    // }
 </style>

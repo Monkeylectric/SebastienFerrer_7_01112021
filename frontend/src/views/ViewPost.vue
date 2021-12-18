@@ -32,13 +32,13 @@
 </template>
 
 <script>
-const axios = require('axios');
+//const axios = require('axios');
+import httpResquest from '../httpRequest'
 
 export default {
     name: 'ViewPost',
     data() {
         return {
-            userLogged: null,
             image: null,
             errorMessage: '',
             post: {},
@@ -51,9 +51,7 @@ export default {
         * @return {Object} - Informations de la publication
         */
         getOnePost() {
-            axios.get(`http://localhost:3000/post/getOnePost/${this.$route.params.id}`, { headers: {
-                'Authorization': `Bearer ${this.userLogged.token}`
-            }})
+            httpResquest.get(`post/getOnePost/${this.$route.params.id}`)
             .then(response => {
                 this.post = response.data.result[0];
             })
@@ -74,10 +72,7 @@ export default {
             formData.append("title", this.post.title);
             formData.append("message",this.post.message);
 
-            axios.put(`http://localhost:3000/post/modifyPost/${this.$route.params.id}`, formData, { headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${this.userLogged.token}`
-            }})
+            httpResquest.put(`http://localhost:3000/post/modifyPost/${this.$route.params.id}`, formData)
             .then(() => {
                 this.image = null;
                 this.getOnePost();
@@ -88,7 +83,6 @@ export default {
         },
     },
     mounted() {
-        this.userLogged = JSON.parse(sessionStorage.getItem('user'));
         this.getOnePost();
     },
 }

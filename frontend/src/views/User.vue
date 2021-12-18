@@ -32,7 +32,8 @@
 </template>
 
 <script>
-const axios = require('axios');
+//const axios = require('axios');
+import httpResquest from '../httpRequest'
 
 export default {
     name: 'User',
@@ -51,9 +52,7 @@ export default {
         * @return {Object} - Informations de l'utilisateur ciblé
         */
         getUser() {
-            axios.get(`http://localhost:3000/user/getUser/${this.$route.params.id}`, { headers: {
-                'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem('user')).token}`
-            }})
+            httpResquest.get(`user/getUser/${this.$route.params.id}`)
             .then(response => {
                 this.user = response.data.result[0];
                 this.getUserPosts();
@@ -68,9 +67,7 @@ export default {
         * @return {Object} - Posts de l'utilisateur ciblé
         */
         getUserPosts() {
-            axios.get(`http://localhost:3000/user/getUserPosts/${this.$route.params.id}` , { headers: {
-                'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem('user')).token}`
-            }})
+            httpResquest.get(`user/getUserPosts/${this.$route.params.id}`)
             .then(response => {
                 //console.log(response.data);
                 this.posts = response.data.result;
@@ -86,9 +83,7 @@ export default {
         deletePost(id) {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce post ?');
             if(valid == true){
-                axios.delete(`http://localhost:3000/post/deletePost/${id}`, { headers: {
-                    'Authorization': `Bearer ${this.userLogged.token}`
-                }})
+                httpResquest.delete(`http://localhost:3000/post/deletePost/${id}`)
                 .then(() => {
                     this.getUser();
                 })

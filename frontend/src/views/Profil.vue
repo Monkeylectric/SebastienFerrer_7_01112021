@@ -61,13 +61,13 @@
 </template>
 
 <script>
-const axios = require('axios');
+//const axios = require('axios');
+import httpResquest from '../httpRequest'
 
 export default {
     name: 'Profil',
     data() {
         return {
-            userLogged: null,
             password: '',
             avatar: null,
             errorMessage: '',
@@ -83,9 +83,7 @@ export default {
         * @return {Object} - Informations de l'utilisateur ciblé
         */
         getUser() {
-            axios.get(`http://localhost:3000/user/getUser/${this.userLogged.userId}`, { headers: {
-                'Authorization': `Bearer ${this.userLogged.token}`
-            }})
+            httpResquest.get(`user/getUser/${this.$root.userId}`)
             .then(response => {
                 this.user = response.data.result[0];
                 this.getUserPosts();
@@ -102,9 +100,7 @@ export default {
         * @return {Object} - Posts de l'utilisateur ciblé
         */
         getUserPosts() {
-            axios.get(`http://localhost:3000/user/getUserPosts/${this.userLogged.userId}` , { headers: {
-                'Authorization': `Bearer ${this.userLogged.token}`
-            }})
+            httpResquest.get(`user/getUserPosts/${this.$root.userId}`)
             .then(response => {
                 this.posts = response.data.result;
             })
@@ -129,10 +125,7 @@ export default {
             formData.append("email",this.user.email);
             formData.append("password",this.password);
 
-            axios.put(`http://localhost:3000/user/modifyUser/${this.userLogged.userId}`, formData, { headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${this.userLogged.token}`
-            }})
+            httpResquest.put(`user/modifyUser/${this.$root.userId}`, formData)
             .then(() => {
                 this.avatar = null;
                 this.password = '';
@@ -155,10 +148,7 @@ export default {
             }
 
             if(valid == true){
-                axios.delete(`http://localhost:3000/user/deleteUser/${this.userLogged.userId}`, { data, headers: {
-                    'Authorization': `Bearer ${this.userLogged.token}`,
-                    'Content-Type': 'application/json'
-                }})
+                httpResquest.delete(`user/deleteUser/${this.$root.userId}`, { data })
                 .then(() => {
                     this.$router.push('/');
                 })
@@ -182,9 +172,7 @@ export default {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce post ?');
 
             if(valid == true){
-                axios.delete(`http://localhost:3000/post/deletePost/${id}`, { headers: {
-                    'Authorization': `Bearer ${this.userLogged.token}`
-                }})
+                httpResquest.delete(`post/deletePost/${id}`)
                 .then(() => {
                     this.getUser();
                 })
@@ -198,7 +186,6 @@ export default {
         }
     },
     mounted() {
-        this.userLogged = JSON.parse(sessionStorage.getItem('user'));
         this.getUser();
     },
     beforeupdated() {
