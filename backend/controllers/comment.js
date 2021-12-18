@@ -11,27 +11,39 @@ const Comment = require('../models/Comment');
     //-- Création d'un nouveau commentaire
     const comment = new Comment({
         postId: req.body.postId,
-        userId: req.body.userId,
+        userId: req.userId,
         message: req.body.message,
     });
 
-    // -- On verifie si l'utilisateur existe
-    let checkUser = "SELECT id FROM user WHERE id = ? LIMIT 1";
-    mysql.query(checkUser, [comment.userId], function(err, result) {
-        if (err) {
-            // -- Utilisateur introuvable !
-            return res.status(404).json({ err });
-        }
-        // -- Sauvegarde du commentaire en bdd
-        let createCommentQuery = "INSERT INTO comment (postId, userId, message, date) VALUES (?, ?, ?, NOW())";
-        mysql.query(createCommentQuery, [comment.postId, comment.userId, comment.message], function(err, result) {
+    console.log(req.body);
+
+    // -- Validation des données transmises
+    let messageRegex = /^[a-zA-Z0-9 _.,!?€'’"(-Ééèàûç)&]{1,255}$/;
+    let verification = [
+        messageRegex.test(comment.message)
+    ];
+
+    if(verification.every(Boolean)) {
+        // -- On verifie si l'utilisateur existe
+        let checkUser = "SELECT id FROM user WHERE id = ? LIMIT 1";
+        mysql.query(checkUser, [comment.userId], function(err, result) {
             if (err) {
-                console.log(err);
-                return res.status(500).json(err.message);
+                // -- Utilisateur introuvable !
+                return res.status(404).json({ err });
             }
-            res.status(201).json({ message: "Utilisateur créé !" });
+            // -- Sauvegarde du commentaire en bdd
+            let createCommentQuery = "INSERT INTO comment (postId, userId, message, date) VALUES (?, ?, ?, NOW())";
+            mysql.query(createCommentQuery, [comment.postId, comment.userId, comment.message], function(err, result) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json(err.message);
+                }
+                res.status(201).json({ message: "Utilisateur créé !" });
+            });
         });
-    });
+    }else {
+        return res.status(500).json({ message: 'Données transmises non correctes' });
+    }
 };
 
 /**
@@ -42,7 +54,7 @@ const Comment = require('../models/Comment');
  */
 exports.getComments = (req, res, next) => {
     //let getCommentsQuery = `SELECT * FROM comment WHERE postId = ?`;
-    let getCommentsQuery = `SELECT comment.id, comment.postId, comment.userId, comment.message, comment.date, user.firstname, user.lastname FROM comment INNER JOIN post ON comment.postId = post.id INNER JOIN user ON comment.userId = user.id WHERE comment.postId = ?`;
+    let getCommentsQuery = `SELECT comment.id, comment.postId, comment.userId, comment.message, comment.date, user.firstname, user.lastname FROM comment INNER JOIN post ON comment.postId = post.id INNER JOIN user ON comment.userId = user.id WHERE comment.postId = ? ORDER BY id DESC`;
     // -- Execution de la requête
     mysql.query(getCommentsQuery, [req.params.id], function (err, result) {
         if (err) {

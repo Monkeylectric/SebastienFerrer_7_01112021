@@ -27,8 +27,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   `avatarUrl` varchar(255) NOT NULL DEFAULT 'http://localhost:3000/images/userDefault.png',
   `role` varchar(20) NOT NULL DEFAULT 'user',
   `date` datetime NOT NULL DEFAULT NOW(),
-  -- PRIMARY KEY (`id`),
-  -- UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 INSERT INTO `user` (`firstname`, `lastname`, `email`, `password`, `role`) VALUES
@@ -48,7 +46,6 @@ CREATE TABLE IF NOT EXISTS `post` (
   `message` varchar(1500) NOT NULL DEFAULT '',
   `imageUrl` varchar(255) NOT NULL DEFAULT '',
   `date` datetime NOT NULL DEFAULT NOW(),
-  -- PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -61,11 +58,9 @@ DROP TABLE IF EXISTS `comment`;
 CREATE TABLE IF NOT EXISTS `comment` (
   `id` int(11) UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `postId` int(11) NOT NULL,
-  --`user` varchar(60) NOT NULL DEFAULT '',
   `userId` int(11) DEFAULT NULL,
   `message` varchar(255) NOT NULL DEFAULT '',
   `date` datetime NOT NULL DEFAULT NOW(),
-  -- PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
