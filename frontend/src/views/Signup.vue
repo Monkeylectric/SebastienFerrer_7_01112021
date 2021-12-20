@@ -75,7 +75,7 @@ export default {
                 };
                 console.log(data);
                 //-- Fonction qui lance la requête Axios POST
-                axios.post("http://localhost:3000/user/signup", data)
+                axios.post("http://localhost:3000/api/user/signup", data)
                     .then(() => {
                         this.$router.push('/');
                     })
@@ -93,6 +93,9 @@ export default {
 <style lang="scss">
     #form-user {
         column-gap: 1vh;
+    }
+    #logo img {
+        width: 40vw;
     }
     #lastname, #firstname {
         width: 50%;

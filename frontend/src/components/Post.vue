@@ -29,7 +29,7 @@
                 </div>
             </div>
             <hr>
-            <div class="commentForm" v-if="$root.isLogged">
+            <div class="commentForm"> <!-- v-if="$root.isLogged" -->
                 <div class="userName"></div>
                 <b-form class="postCommentForm" @submit="postComment">
                     <!-- <label for="comment">Votre commentaire:</label> -->
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+//import axios from 'axios'
 import httpResquest from '../httpRequest'
 
 export default {
@@ -76,23 +76,13 @@ export default {
         },
         postComment(e) {
             e.preventDefault();
-            //console.log(this.id, this.newComment);
-
-            let formData = new FormData();
-            formData.append("postId", this.id);
-            formData.append("message", this.newComment);
-            console.log(formData);
 
             let comment = {
                 postId: this.id,
                 message: this.newComment,
             }
 
-            //console.log(comment);
-
-            axios.post('http://localhost:3000/comment/createComment', comment, { headers: {
-                'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem('user')).token}`
-            }})
+            httpResquest.post('comment/createComment', comment)
             .then(() => {
                 this.newComment = '';
                 this.getComments();
@@ -162,6 +152,8 @@ export default {
     .userImg {
         width: 100%;
         height: 100%;
+        object-fit: cover;
+        object-position: center;
     }
 
     /*.postMain {

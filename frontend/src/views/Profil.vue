@@ -63,7 +63,6 @@
 <script>
 //const axios = require('axios');
 import httpResquest from '../httpRequest'
-
 export default {
     name: 'Profil',
     data() {
@@ -83,7 +82,7 @@ export default {
         * @return {Object} - Informations de l'utilisateur ciblé
         */
         getUser() {
-            httpResquest.get(`user/getUser/${this.$root.userId}`)
+            httpResquest.get(`user/getUser/${this.$parent.userId}`)
             .then(response => {
                 this.user = response.data.result[0];
                 this.getUserPosts();
@@ -100,7 +99,7 @@ export default {
         * @return {Object} - Posts de l'utilisateur ciblé
         */
         getUserPosts() {
-            httpResquest.get(`user/getUserPosts/${this.$root.userId}`)
+            httpResquest.get(`user/getUserPosts/${this.$parent.userId}`)
             .then(response => {
                 this.posts = response.data.result;
             })
@@ -117,7 +116,6 @@ export default {
         */
         modifyUser(e) {
             e.preventDefault();
-
             let formData = new FormData();
             formData.append("image", this.avatar);
             formData.append("firstname", this.user.firstname);
@@ -125,7 +123,7 @@ export default {
             formData.append("email",this.user.email);
             formData.append("password",this.password);
 
-            httpResquest.put(`user/modifyUser/${this.$root.userId}`, formData)
+            httpResquest.put(`user/modifyUser/${this.$parent.userId}`, formData)
             .then(() => {
                 this.avatar = null;
                 this.password = '';
@@ -142,13 +140,11 @@ export default {
         */
         deleteUser() {
             let valid = confirm('Etes-vous sûr de vouloir supprimer votre compte ?');
-
             let data = {
                 password: this.password
             }
-
             if(valid == true){
-                httpResquest.delete(`user/deleteUser/${this.$root.userId}`, { data })
+                httpResquest.delete(`user/deleteUser/${this.$parent.userId}`, { data })
                 .then(() => {
                     this.$router.push('/');
                 })
@@ -170,7 +166,6 @@ export default {
         */
         deletePost(id) {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce post ?');
-
             if(valid == true){
                 httpResquest.delete(`post/deletePost/${id}`)
                 .then(() => {
@@ -207,7 +202,10 @@ export default {
         margin: 0 0 2vh 0;
     }
     #userAvatar {
-        width: 25%;
+        width: 14vw;
+        height: 14vw;
+        object-fit: cover;
+        object-position: center;
     }
     #form-user {
         column-gap: 1vh;
@@ -215,7 +213,6 @@ export default {
     #lastname, #firstname {
         width: 50%;
     }
-
     #userPostsContainer {
         margin: 2vh 0 0 0;
     }
@@ -224,18 +221,15 @@ export default {
         justify-content: center;
         column-gap: 20px;
         margin: 0 0 5vh 0;
-
         .userPost {
             height: fit-content;
             margin-bottom: 2vh;
-
             .userPostCard {
                 border-radius: 10px;
                 border: 1px solid rgba(255, 255, 255, .2);
                 box-shadow: -6px -6px 16px #fff9f9, 6px 6px 16px #FFD7D7;
             }
         }
-
         img {
             height: 200px;
             object-fit: cover;
@@ -250,5 +244,9 @@ export default {
         -webkit-line-clamp: 5;
         -webkit-box-orient: vertical;
         white-space: normal;
+    }
+
+    .btn-danger {
+        margin-left: 1%;
     }
 </style>

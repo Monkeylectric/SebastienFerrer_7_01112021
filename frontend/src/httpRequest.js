@@ -7,10 +7,9 @@ if(sessionStorage.getItem('user')){
 }
 
 const httpRequest = axios.create({
-    baseURL: 'http://localhost:3000/',
-    //timeout: 2000,
+    baseURL: 'http://localhost:3000/api/',
+    timeout: 2000,
     headers: {
-        'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${authToken}`
     }
 })

@@ -11,6 +11,7 @@ import Navbar from '@/components/Navbar.vue'
 import NavbarFeed from '@/components/NavbarFeed.vue'
 
 export default {
+    name: 'App',
     components: {
         Navbar,
         NavbarFeed,
@@ -18,22 +19,32 @@ export default {
     data() {
         return {
             isLogged: null,
+            userId: null,
+            token: null,
         }
+    },
+    beforeMount(){
+        this.setAuth();
     },
     mounted() {
-        if(sessionStorage.getItem('user')) {
-            this.isLogged = true;
-        }else {
-            this.isLogged = null;
-        }
+        this.setAuth();
     },
     updated() {
-        if(sessionStorage.getItem('user')) {
-            this.isLogged = true;
-        }else {
-            this.isLogged = null;
-        }
+        this.setAuth();
     },
+    methods: {
+        setAuth() {
+            if(sessionStorage.getItem('user')) {
+                this.isLogged = true;
+                this.userId = JSON.parse(sessionStorage.getItem('user')).userId;
+                this.token = JSON.parse(sessionStorage.getItem('user')).token;
+            }else {
+                this.isLogged = null;
+                this.userId = null;
+                this.token = null;
+            }
+        }
+    }
 }
 </script>
 

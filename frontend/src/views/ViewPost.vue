@@ -72,7 +72,9 @@ export default {
             formData.append("title", this.post.title);
             formData.append("message",this.post.message);
 
-            httpResquest.put(`http://localhost:3000/post/modifyPost/${this.$route.params.id}`, formData)
+            httpResquest.put(`http://localhost:3000/post/modifyPost/${this.$route.params.id}`, formData, { headers: {
+                'Content-Type': 'multipart/form-data'
+            }})
             .then(() => {
                 this.image = null;
                 this.getOnePost();

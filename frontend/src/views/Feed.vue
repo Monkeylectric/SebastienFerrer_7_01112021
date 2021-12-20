@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id="feed" class="container">
-            <b-form id="newPostForm" @submit="postMessage" v-if="$root.isLogged">
+            <b-form id="newPostForm" @submit="postMessage"> <!-- v-if="$root.isLogged" -->
                 <label for="setPost" id="setPostHeader">Publier un message:</label>
                 <b-form-input class="mb-2 mr-sm-2 mb-sm-0" v-model="titleToPost" type="text" placeholder="Votre titre..." maxlength="255" required></b-form-input>
                 <b-form-textarea id="comment" class="mb-2 mr-sm-2 mb-sm-0" type="text" v-model="messageToPost" placeholder="Enter un message..." maxlength="1500" required></b-form-textarea>
@@ -19,7 +19,6 @@
             :avatar="post.avatarUrl"
             :userId="post.userId" />
         </div>
-        <!-- <Footer /> -->
     </div>
 </template>
 
@@ -32,8 +31,7 @@ import httpResquest from '../httpRequest'
 export default {
     name: 'Feed',
     components: {
-        Post,
-        //Footer
+        Post
     },
     data() {
         return {
@@ -46,16 +44,16 @@ export default {
     },
     methods: {
         getAllPosts(){
+            //console.log(this.$parent.userId);
             httpResquest.get('post/getAllPost')
             .then(response => {
-                //console.log(response.data.result, this.$root.userId, this.$root.isLogged);
                 this.posts = response.data.result; 
             })
             .catch(error => {
                 console.log(error);
             })
 
-            console.log(this.$root.isLogged);
+            //console.log(this.$root.isLogged);
         },
         postMessage(e) {
             e.preventDefault();
@@ -65,7 +63,9 @@ export default {
             formData.append("message", this.messageToPost);
             formData.append("image", this.postFile);
 
-            httpResquest.post('post/createPost', formData)
+            httpResquest.post('post/createPost', formData, { headers: {
+                'Content-Type': 'multipart/form-data'
+            }})
             .then(() => {
                 this.titleToPost = '';
                 this.messageToPost = '';
@@ -83,11 +83,12 @@ export default {
         },
     },
     mounted() {
+        if(sessionStorage.getItem('user')) {
+            this.$parent.userId = JSON.parse(sessionStorage.getItem('user')).userId;
+            this.$parent.token = JSON.parse(sessionStorage.getItem('user')).token;
+        }
         this.getAllPosts();
-    },
-    /*beforeupdated() {
-        this.getAllPosts();
-    }*/
+    }
 }
 </script>
 

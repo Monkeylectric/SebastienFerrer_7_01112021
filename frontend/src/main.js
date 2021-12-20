@@ -19,7 +19,7 @@ new Vue({
     router,
     store,
     render: h => h(App),
-    data() {
+    /*data() {
         return {
             userId: null,
             token: null,
@@ -46,5 +46,5 @@ new Vue({
         isLogged() {
             return this.userId != null;
         }
-    }
+    }*/
 }).$mount('#app')

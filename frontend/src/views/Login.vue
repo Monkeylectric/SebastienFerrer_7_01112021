@@ -54,17 +54,18 @@ export default {
                 password: this.password
             };
             //-- Fonction qui lance la requête Axios POST
-            axios.post("http://localhost:3000/user/login", data)
+            axios.post("http://localhost:3000/api/user/login", data)
                 .then(response => {
                     const user = {
                         token: response.data.token,
                         userId: response.data.userId,
-                        //userName: response.data.username,
                         userRole: response.data.role,
                     };
                     //sessionStorage.setItem('isLogged', true);
                     sessionStorage.setItem('user', JSON.stringify(user));
-                    this.$router.push('Feed');
+                    setTimeout(() => {
+                        this.$router.push({ name: 'Feed' });
+                    }, 1000);
                 })
                 .catch(error => {
                     console.log(error);
@@ -78,12 +79,12 @@ export default {
                 })
         }
     },
-    /*beforeMount() {
+    beforeMount() {
         localStorage.clear();
         sessionStorage.clear();
-    },*/
+    },
     mounted() {
-        //localStorage.clear();
+        localStorage.clear();
         sessionStorage.clear();
     }
 }
@@ -93,4 +94,7 @@ export default {
     // #login {
     //     height: 90vh;
     // }
+    #logo img {
+        width: 40vw;
+    }
 </style>

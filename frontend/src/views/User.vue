@@ -83,7 +83,7 @@ export default {
         deletePost(id) {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce post ?');
             if(valid == true){
-                httpResquest.delete(`http://localhost:3000/post/deletePost/${id}`)
+                httpResquest.delete(`post/deletePost/${id}`)
                 .then(() => {
                     this.getUser();
                 })
@@ -112,7 +112,6 @@ export default {
     .userPost {
         border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, .2);
-        box-shadow: -6px -6px 16px #fff9f9, 6px 6px 16px #FFD7D7;
     }
     #userHeader {
         width: 100%;
@@ -121,7 +120,10 @@ export default {
         margin: 5vh 0 2vh 0;
 
         img {
-            width: 20%;
+            width: 16vw;
+            height: 16vw;
+            object-fit: cover;
+            object-position: center;
         }
     }
     #username {
@@ -161,6 +163,7 @@ export default {
     #userPosts {
         display: flex;
         justify-content: center;
+        flex-wrap: wrap;
         column-gap: 20px;
         margin: 0 0 5vh 0;
 
