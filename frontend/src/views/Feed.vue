@@ -44,16 +44,15 @@ export default {
     },
     methods: {
         getAllPosts(){
-            //console.log(this.$parent.userId);
-            httpResquest.get('post/getAllPost')
+            httpResquest.get('post/getAllPost', { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`
+            }})
             .then(response => {
                 this.posts = response.data.result; 
             })
             .catch(error => {
                 console.log(error);
             })
-
-            //console.log(this.$root.isLogged);
         },
         postMessage(e) {
             e.preventDefault();
@@ -64,6 +63,7 @@ export default {
             formData.append("image", this.postFile);
 
             httpResquest.post('post/createPost', formData, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`,
                 'Content-Type': 'multipart/form-data'
             }})
             .then(() => {
@@ -81,6 +81,12 @@ export default {
                 }
             })
         },
+    },
+    beforeMount() {
+        if(sessionStorage.getItem('user')) {
+            this.$parent.userId = JSON.parse(sessionStorage.getItem('user')).userId;
+            this.$parent.token = JSON.parse(sessionStorage.getItem('user')).token;
+        }
     },
     mounted() {
         if(sessionStorage.getItem('user')) {

@@ -51,7 +51,9 @@ export default {
         * @return {Object} - Informations de la publication
         */
         getOnePost() {
-            httpResquest.get(`post/getOnePost/${this.$route.params.id}`)
+            httpResquest.get(`post/getOnePost/${this.$route.params.id}`, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`
+            }})
             .then(response => {
                 this.post = response.data.result[0];
             })
@@ -72,7 +74,8 @@ export default {
             formData.append("title", this.post.title);
             formData.append("message",this.post.message);
 
-            httpResquest.put(`http://localhost:3000/post/modifyPost/${this.$route.params.id}`, formData, { headers: {
+            httpResquest.put(`post/modifyPost/${this.$route.params.id}`, formData, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`,
                 'Content-Type': 'multipart/form-data'
             }})
             .then(() => {

@@ -24,7 +24,7 @@
                     <div v-for="comment in comments" :key="comment.id" class="comment">
                             <div class="commentUsername"><router-link :to="{ name: 'User', params: { id: comment.userId }}">{{comment.firstname}} {{comment.lastname}}</router-link></div>
                             <div class="commentMessage">{{comment.message}}</div>
-                            <span class="commentDelete" @click="deleteComment(comment.id)" v-if="$root.userId == comment.userId || userRole == 'admin'">X</span>
+                            <span class="commentDelete" @click="deleteComment(comment.id)" v-if="userLogged == comment.userId || userRole == 'admin'">X</span>
                     </div>
                 </div>
             </div>
@@ -59,6 +59,7 @@ export default {
     data() {
         return {
             id: this.postId,
+            userLogged: JSON.parse(sessionStorage.getItem('user')).userId,
             userRole: null,
             newComment: '',
             comments: [],
@@ -66,7 +67,9 @@ export default {
     },
     methods : {
         getComments() {
-            httpResquest.get(`comment/${this.id}`)
+            httpResquest.get(`comment/${this.id}`, { headers: {
+                'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem('user')).token}`
+            }})
             .then(response => {
                 this.comments = response.data.result;
             })
@@ -82,7 +85,9 @@ export default {
                 message: this.newComment,
             }
 
-            httpResquest.post('comment/createComment', comment)
+            httpResquest.post('comment/createComment', comment, { headers: {
+                'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem('user')).token}`
+            }})
             .then(() => {
                 this.newComment = '';
                 this.getComments();
@@ -94,7 +99,9 @@ export default {
         deleteComment(commentId) {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce commentaire ?');
             if(valid == true){
-                httpResquest.delete(`comment/deleteComment/${commentId}`)
+                httpResquest.delete(`comment/deleteComment/${commentId}`, { headers: {
+                    'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem('user')).token}`
+                }})
                 .then(() => {
                     console.log("Commentaire bien supprimé !");
                     this.getComments();

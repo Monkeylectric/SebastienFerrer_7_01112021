@@ -63,6 +63,7 @@
 <script>
 //const axios = require('axios');
 import httpResquest from '../httpRequest'
+
 export default {
     name: 'Profil',
     data() {
@@ -82,7 +83,9 @@ export default {
         * @return {Object} - Informations de l'utilisateur ciblé
         */
         getUser() {
-            httpResquest.get(`user/getUser/${this.$parent.userId}`)
+            httpResquest.get(`user/getUser/${this.$parent.userId}`, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`
+            }})
             .then(response => {
                 this.user = response.data.result[0];
                 this.getUserPosts();
@@ -99,7 +102,9 @@ export default {
         * @return {Object} - Posts de l'utilisateur ciblé
         */
         getUserPosts() {
-            httpResquest.get(`user/getUserPosts/${this.$parent.userId}`)
+            httpResquest.get(`user/getUserPosts/${this.$parent.userId}`, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`
+            }})
             .then(response => {
                 this.posts = response.data.result;
             })
@@ -123,7 +128,10 @@ export default {
             formData.append("email",this.user.email);
             formData.append("password",this.password);
 
-            httpResquest.put(`user/modifyUser/${this.$parent.userId}`, formData)
+            httpResquest.put(`user/modifyUser/${this.$parent.userId}`, formData, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`,
+                'Content-Type': 'multipart/form-data'
+            }})
             .then(() => {
                 this.avatar = null;
                 this.password = '';
@@ -144,7 +152,9 @@ export default {
                 password: this.password
             }
             if(valid == true){
-                httpResquest.delete(`user/deleteUser/${this.$parent.userId}`, { data })
+                httpResquest.delete(`user/deleteUser/${this.$parent.userId}`, { data, headers: {
+                    'Authorization': `Bearer ${this.$parent.token}`
+                }})
                 .then(() => {
                     this.$router.push('/');
                 })
@@ -167,7 +177,9 @@ export default {
         deletePost(id) {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce post ?');
             if(valid == true){
-                httpResquest.delete(`post/deletePost/${id}`)
+                httpResquest.delete(`post/deletePost/${id}`, { headers: {
+                    'Authorization': `Bearer ${this.$parent.token}`
+                }})
                 .then(() => {
                     this.getUser();
                 })

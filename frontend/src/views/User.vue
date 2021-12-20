@@ -52,7 +52,9 @@ export default {
         * @return {Object} - Informations de l'utilisateur ciblé
         */
         getUser() {
-            httpResquest.get(`user/getUser/${this.$route.params.id}`)
+            httpResquest.get(`user/getUser/${this.$route.params.id}`, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`
+            }})
             .then(response => {
                 this.user = response.data.result[0];
                 this.getUserPosts();
@@ -67,7 +69,9 @@ export default {
         * @return {Object} - Posts de l'utilisateur ciblé
         */
         getUserPosts() {
-            httpResquest.get(`user/getUserPosts/${this.$route.params.id}`)
+            httpResquest.get(`user/getUserPosts/${this.$route.params.id}`, { headers: {
+                'Authorization': `Bearer ${this.$parent.token}`
+            }})
             .then(response => {
                 //console.log(response.data);
                 this.posts = response.data.result;
@@ -83,7 +87,9 @@ export default {
         deletePost(id) {
             let valid = confirm('Etes-vous sûr de vouloir supprimer ce post ?');
             if(valid == true){
-                httpResquest.delete(`post/deletePost/${id}`)
+                httpResquest.delete(`post/deletePost/${id}`, { headers: {
+                    'Authorization': `Bearer ${this.$parent.token}`
+                }})
                 .then(() => {
                     this.getUser();
                 })

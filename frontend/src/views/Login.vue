@@ -30,7 +30,8 @@
 </template>
 
 <script>
-const axios = require('axios');
+//const axios = require('axios');
+import httpResquest from '../httpRequest'
 
 export default {
     name: 'Login',
@@ -54,7 +55,7 @@ export default {
                 password: this.password
             };
             //-- Fonction qui lance la requête Axios POST
-            axios.post("http://localhost:3000/api/user/login", data)
+            httpResquest.post("user/login", data)
                 .then(response => {
                     const user = {
                         token: response.data.token,

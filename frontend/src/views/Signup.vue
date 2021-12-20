@@ -42,7 +42,8 @@
 </template>
 
 <script>
-const axios = require('axios');
+//const axios = require('axios');
+import httpResquest from '../httpRequest'
 
 export default {
     name: 'Signup',
@@ -73,9 +74,9 @@ export default {
                     email: this.user.email,
                     password: this.user.password,
                 };
-                console.log(data);
+
                 //-- Fonction qui lance la requête Axios POST
-                axios.post("http://localhost:3000/api/user/signup", data)
+                httpResquest.post("user/signup", data)
                     .then(() => {
                         this.$router.push('/');
                     })
