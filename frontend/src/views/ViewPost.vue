@@ -9,7 +9,7 @@
                         <b-card-text>
                             <b-form class="text-start" @submit="modifyPost">
                                 <div id="imageContainer">
-                                    <img id="postImage" :src="post.imageUrl" alt="post image">
+                                    <img id="postImage" :src="post.imageUrl" alt="post image" v-if="post.imageUrl">
                                     <b-form-file v-model="image" plain></b-form-file>
                                 </div>
                                 <b-form-group label="Titre:" class="mb-2">

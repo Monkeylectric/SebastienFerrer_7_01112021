@@ -128,7 +128,7 @@ export default {
             formData.append("email",this.user.email);
             formData.append("password",this.password);
 
-            httpResquest.put(`user/modifyUser/${this.$parent.userId}`, formData, { headers: {
+            httpResquest.put(`user/modifyUser`, formData, { headers: {
                 'Authorization': `Bearer ${this.$parent.token}`,
                 'Content-Type': 'multipart/form-data'
             }})
@@ -148,11 +148,13 @@ export default {
         */
         deleteUser() {
             let valid = confirm('Etes-vous sûr de vouloir supprimer votre compte ?');
+            
             let data = {
                 password: this.password
             }
+
             if(valid == true){
-                httpResquest.delete(`user/deleteUser/${this.$parent.userId}`, { data, headers: {
+                httpResquest.delete(`user/deleteUser`, { data, headers: {
                     'Authorization': `Bearer ${this.$parent.token}`
                 }})
                 .then(() => {
