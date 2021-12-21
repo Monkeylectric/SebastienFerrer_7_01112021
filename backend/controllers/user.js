@@ -151,7 +151,7 @@ exports.getUserPosts = (req, res, next) => {
  * @param {*} next
  */
 exports.modifyUser = (req, res, next) => {
-    const userId = req.params.id;
+    const userId = req.userId;
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
     const email = req.body.email;
@@ -246,7 +246,7 @@ exports.deleteUser = (req, res, next) => {
     // -- Recherche de l'utilisateur dans la base de données
     let checkPasswordQuery = "SELECT id, avatarUrl, password FROM user WHERE id = ? LIMIT 1";
 
-    mysql.query(checkPasswordQuery, [req.params.id], function (err, result) {
+    mysql.query(checkPasswordQuery, [req.userId], function (err, result) {
         bcrypt.compare(password, result[0].password)
             .then(valid => {
                 // -- Si le mot de passe est incorrect
@@ -285,7 +285,7 @@ exports.deleteUser = (req, res, next) => {
  * @param {Object} req 
  * @param {Object} res 
  * @param {*} next 
- */
+ 
 exports.getAllUsers = (req, res, next) => {
     let getAllUsersQuery = `SELECT * FROM user`;
     // -- Execution de la requête
@@ -293,7 +293,7 @@ exports.getAllUsers = (req, res, next) => {
         if (err) {
             return res.status(400).json({ err }); 
         }else {
-            res.status(200).json({ result, message: "Tous les utilisateurs ont été récuperer avec succès !" });
+            res.status(200).json({ result, message: "Tous les utilisateurs ont été récuperés avec succès !" });
         }
     });
-}
+}*/
